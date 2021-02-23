@@ -8,12 +8,12 @@ class Mastermind
 
 
     def print_matches(chars)
-        print @secret_code.num_exact_matches(chars)
-        print @secret_code.num_near_matches(chars)
+        puts "exact matches: " + @secret_code.num_exact_matches(chars).to_s
+        puts "near matches: " + @secret_code.num_near_matches(chars).to_s
     end
 
     def ask_user_for_guess
-        print "Enter a code"
+        puts "Enter a code "
         guess1 = gets.chomp
         guess = Code.from_string(guess1)
         print_matches(guess)
