@@ -81,6 +81,7 @@ class String
     #
     # "cats".substrings     # => ["c", "ca", "cat", "cats", "a", "at", "ats", "t", "ts", "s"]
     # "cats".substrings(2)  # => ["ca", "at", "ts"]
+
     def substrings(length = nil)
 
         arr = []
@@ -97,7 +98,7 @@ class String
         if !length.nil?
             arr.select { |chars| chars.length == length }
         else
-            arr
+        arr
         end
         
     end
