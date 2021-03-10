@@ -265,10 +265,10 @@ def  prime_factorization(n)
     factors = []
     (2...n).each do |i|
         if is_prime?(i) && n % i == 0
-        factors = [i] + [prime_factorization(n / i)]
+        factors = prime_factorization(n / i) + [i]
         end
     end
-    factors.flatten.sort
+    factors
 end
 
 def is_prime?(n)
