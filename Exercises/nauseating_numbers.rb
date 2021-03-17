@@ -18,7 +18,7 @@ def strange_sums(num_array)
     end
     count
 end
-puts "--------------------"
+puts "--------strange_sums------------"
 p strange_sums([2, -3, 3, 4, -2])     # 2
 p strange_sums([42, 3, -1, -42])      # 1
 p strange_sums([-5, 5])               # 1
@@ -37,7 +37,7 @@ def pair_product(numbers, product)
     end
     false
 end
-puts "--------------------"
+puts "--------pair_product------------"
 p pair_product([4, 2, 5, 8], 16)    # true
 p pair_product([8, 1, 9, 3], 8)     # true
 p pair_product([3, 4], 12)          # true
@@ -62,7 +62,7 @@ def rampant_repeats(string, hash)
     end
     new_str
 end
-puts "--------------------"
+puts "--------rampant_repeats------------"
 p rampant_repeats('taco', {'a'=>3, 'c'=>2})             # 'taaacco'
 p rampant_repeats('feverish', {'e'=>2, 'f'=>4, 's'=>3}) # 'ffffeeveerisssh'
 p rampant_repeats('misispi', {'s'=>2, 'p'=>2})          # 'mississppi'
@@ -82,7 +82,7 @@ def perfect_square(number)
     end
     false
 end
-puts "--------------------"
+puts "----------perfect_square----------"
 p perfect_square(1)     # true
 p perfect_square(4)     # true
 p perfect_square(64)    # true
@@ -116,7 +116,7 @@ def divisors(number)
 end 
 
 
-puts "--------------------"
+puts "-------anti_prime-------------"
 p anti_prime?(24)   # true
 p anti_prime?(36)   # true
 p anti_prime?(48)   # true
@@ -128,3 +128,429 @@ p anti_prime?(100)  # false
 p anti_prime?(136)  # false
 p anti_prime?(1024) # false
 
+# Let a 2-dimensional array be known as a "matrix". Write a method matrix_addition that 
+# accepts two matrices as arguments. The two matrices are guaranteed to have the same 
+# "height" and "width". The method should return a new matrix representing the sum of the 
+# two arguments.
+
+def matrix_addition(matrix1, matrix2)
+added = []
+i = 0
+    matrix1.length.times do
+        k = 0
+        pair = []
+        while k < matrix1[0].length
+            pair << matrix1[i][k] + matrix2[i][k]
+            k += 1
+        end
+        added << pair
+        i += 1
+    end
+    added
+end
+
+puts "----------matrix_addition----------"
+matrix_a = [[2,5], [4,7]]
+matrix_b = [[9,1], [3,0]]
+matrix_c = [[-1,0], [0,-1]]
+matrix_d = [[2, -5], [7, 10], [0, 1]]
+matrix_e = [[0 , 0], 
+            [12, 4], 
+            [6,  3]]
+
+p matrix_addition(matrix_a, matrix_b) # [[11, 6], [7, 7]]
+p matrix_addition(matrix_a, matrix_c) # [[1, 5], [4, 6]]
+p matrix_addition(matrix_b, matrix_c) # [[8, 1], [3, -1]]
+p matrix_addition(matrix_d, matrix_e) # [[2, -5], [19, 14], [6, 4]]
+
+# Write a method mutual_factors that accepts any amount of numbers as arguments. 
+# The method should return an array containing all of the common divisors shared 
+# among the arguments. For example, the common divisors of 50 and 30 are 1, 2, 5, 10. 
+# You can assume that all of the arguments are positive integers.
+
+
+def mutual_factors(*nums)
+    # common_h = Hash.new(0)
+    # nums.sort!
+
+    # factors(nums[0]).each do |factor|
+    #     nums.each { |num| common_h[factor] += 1 if num % factor == 0 }
+    # end
+
+    # common_f = []
+    # common_h.each {|k,v| common_f << k if v == nums.length}
+    # common_f
+    nums.sort!
+    facts = factors(nums.first)
+    facts.select {|f| nums.all? {|num| num % f == 0} }
+end
+
+def factors(number)
+    factors = []
+    (1..number).each { |num| factors << num if number % num == 0 }
+
+    factors 
+end
+
+puts "---------mutual_factors-----------"
+p mutual_factors(50, 30)            # [1, 2, 5, 10]
+p mutual_factors(50, 30, 45, 105)   # [1, 5]
+p mutual_factors(8, 4)              # [1, 2, 4]
+p mutual_factors(8, 4, 10)          # [1, 2]
+p mutual_factors(12, 24)            # [1, 2, 3, 4, 6, 12]
+p mutual_factors(12, 24, 64)        # [1, 2, 4]
+p mutual_factors(22, 44)            # [1, 2, 11, 22]
+p mutual_factors(22, 44, 11)        # [1, 11]
+p mutual_factors(7)                 # [1, 7]
+p mutual_factors(7, 9)              # [1]
+
+# Write a method tribonacci_number that accepts a number argument, n, 
+# and returns the n-th number of the tribonacci sequence.
+
+
+def tribonacci_number(num)
+    return 1 if num == 1
+    return 1 if num == 2
+    return 2 if num == 3
+
+    tribonacci_number(num - 1) + tribonacci_number(num - 2) + tribonacci_number(num - 3)
+end
+
+puts "------tribonacci_number--------------"
+p tribonacci_number(1)  # 1
+p tribonacci_number(2)  # 1
+p tribonacci_number(3)  # 2
+p tribonacci_number(4)  # 4
+p tribonacci_number(5)  # 7
+p tribonacci_number(6)  # 13
+p tribonacci_number(7)  # 24
+p tribonacci_number(11) # 274
+
+
+# ----------------------------------------------Phase 3: Now we're having fun.
+
+# Write a method matrix_addition_reloaded that accepts any number of matrices 
+# as arguments. The method should return a new matrix representing the sum of 
+# the arguments. Matrix addition can only be performed on matrices of similar 
+# dimensions, so if all of the given matrices do not have the same "height" and 
+# "width", then return nil.
+
+def matrix_addition_reloaded(*matrixes)
+    return nil if !(matrixes.all? {|pair| matrixes[0].length == pair.length})
+    # return matrixes if matrixes.length < 2
+    
+    matrixes.inject do |acc, el|
+        matrix_addition(acc, el)
+    end
+
+end
+
+puts "-------MATRIX-------------"
+
+matrix_a = [[2,5], [4,7]] 
+matrix_b = [[9,1], [3,0]] 
+matrix_c = [[-1,0], [0,-1]]
+matrix_d = [[2, -5], [7, 10], [0, 1]]
+matrix_e = [[0 , 0], [12, 4], [6,  3]]
+
+p matrix_addition_reloaded(matrix_a, matrix_b)              # [[11, 6], [7, 7]]
+p matrix_addition_reloaded(matrix_a, matrix_b, matrix_c)    # [[10, 6], [7, 6]]
+p matrix_addition_reloaded(matrix_e)                        # [[0, 0], [12, 4], [6, 3]]
+p matrix_addition_reloaded(matrix_d, matrix_e)              # [[2, -5], [19, 14], [6, 4]]
+p matrix_addition_reloaded(matrix_a, matrix_b, matrix_e)    # nil
+p matrix_addition_reloaded(matrix_d, matrix_e, matrix_c)    # nil
+
+
+# Write a method squarocol? that accepts a 2-dimensional array as an argument. 
+# The method should return a boolean indicating whether or not any row or column 
+# is completely filled with the same element. You may assume that the 2-dimensional 
+# array has "square" dimensions, meaning it's height is the same as it's width.
+
+def squarocol?(arr)
+    rows?(arr) || cols(arr)
+end
+
+def cols(arr)
+    i = 0
+    while i < arr.length
+        k = 0
+        while k < arr.length - 1
+            if arr[k][i] == arr[k+1][i]
+                k += 1
+            else
+                break
+            end
+            return true if k == arr.length - 1
+        end
+        i += 1
+    end
+    false
+end
+
+
+def rows?(arr)
+    arr.each do |row|
+       row.each do |ele|
+            return true if row.all? {|ele1| ele1 == ele}
+       end
+    end
+    false
+end
+
+puts "-------squarocol-------------"
+
+p squarocol?([
+    [:a, :x , :d],
+    [:b, :x , :e],
+    [:c, :x , :f],
+]) # true
+
+p squarocol?([
+    [:x, :y, :x],
+    [:x, :z, :x],
+    [:o, :o, :o],
+]) # true
+
+p squarocol?([
+    [:o, :x , :o],
+    [:x, :o , :x],
+    [:o, :x , :o],
+]) # false
+
+p squarocol?([
+    [1, 2, 2, 7],
+    [1, 6, 6, 7],
+    [0, 5, 2, 7],
+    [4, 2, 9, 7],
+]) # true
+
+p squarocol?([
+    [1, 2, 2, 7],
+    [1, 6, 6, 0],
+    [0, 5, 2, 7],
+    [4, 2, 9, 7],
+]) # false
+
+# Write a method squaragonal? that accepts 2-dimensional array as an argument. 
+# The method should return a boolean indicating whether or not the array contains 
+# all of the same element across either of its diagonals. You may assume that the 
+# 2-dimensional array has "square" dimensions, meaning it's height is the same as 
+# it's width.
+
+def squaragonal?(arr)
+    left_daig(arr) || right_daig(arr)
+end
+
+
+def left_daig(arr)
+    k = 0
+    while k < arr.length - 1
+        if arr[k][k] == arr[k+1][k+1]
+            k += 1
+        else
+            break
+        end
+        return true if k == arr.length - 1
+    end
+    false
+end
+
+def right_daig(arr)
+    k = arr.length - 1
+    i = 0
+    while k >= 0
+        if arr[i][k] == arr[i+1][k-1]
+            k -= 1
+            i += 1
+        else
+            break
+        end
+        return true if k == 0
+    end
+    false
+end
+
+puts "-------squaragonal-------------"
+p squaragonal?([
+    [:x, :y, :o],
+    [:x, :x, :x],
+    [:o, :o, :x],
+]) # true
+
+p squaragonal?([
+    [:x, :y, :o],
+    [:x, :o, :x],
+    [:o, :o, :x],
+]) # true
+
+p squaragonal?([
+    [1, 2, 2, 7],
+    [1, 1, 6, 7],
+    [0, 5, 1, 7],
+    [4, 2, 9, 1],
+]) # true
+
+p squaragonal?([
+    [1, 2, 2, 5],
+    [1, 6, 5, 0],
+    [0, 2, 2, 7],
+    [5, 2, 9, 7],
+]) # false
+
+# Pascal's triangle is a 2-dimensional array with the shape of a pyramid. 
+# The top of the pyramid is the number 1. To generate further levels of the 
+# pyramid, every element is the sum of the element above and to the left with 
+# the element above and to the right. Nonexisting elements are treated as 0 when 
+# calculating the sum.
+
+# Write a method pascals_triangle that accepts a positive number, n, as an argument 
+# and returns a 2-dimensional array representing the first n levels of pascal's triangle.
+
+def pascals_triangle(n)
+    triangle = [[1]]
+    until triangle.length == n
+        triangle << row(triangle[-1])
+    end
+    triangle
+end
+
+def row(previous_row)
+    new_row = []
+    (0..previous_row.length).each do |i|
+        current = previous_row[i] || 0
+        previous = previous_row[i-1]
+        if i == 0
+            previous = 0
+        end
+        new_row << current + previous
+    end
+new_row
+end
+
+puts "-------pascals_triangle-------------"
+
+p pascals_triangle(5)
+# [ [1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1] ]
+
+p pascals_triangle(7)
+# [
+#     [1],
+#     [1, 1],
+#     [1, 2, 1],
+#     [1, 3, 3, 1],
+#     [1, 4, 6, 4, 1],
+#     [1, 5, 10, 10, 5, 1],
+#     [1, 6, 15, 20, 15, 6, 1]
+# ]
+
+# ----------------------------------------------Phase 4: Nauseating
+# The first three Mersenne primes are 3, 7, and 31. Write a method 
+# mersenne_prime that accepts a number, n, as an argument and returns 
+# the n-th Mersenne prime.
+
+def mersenne_prime(n)
+    arr = []
+    k = 2
+    i = 3
+    until arr.length == n
+        if is_prime?(i)
+            arr << i
+            k += 1
+            i = (2 ** k).to_i - 1
+        else
+            k += 1
+            i = (2 ** k).to_i - 1
+        end
+    end
+    arr[-1]
+end
+
+def is_prime?(n)
+    (2..(n/2)).each {|i| return false if n % i == 0}
+    return true
+end
+
+
+
+puts "-------mersenne_prime-------------"
+p mersenne_prime(1) # 3
+p mersenne_prime(2) # 7
+p mersenne_prime(3) # 31
+p mersenne_prime(4) # 127
+p mersenne_prime(6) # 131071
+
+# Write a method triangular_word? that accepts a word as an argument and 
+# returns a boolean indicating whether or not that word's number encoding is a 
+# triangular number. You can assume that the argument contains lowercase letters.
+
+def triangular_word?(word)
+    triangle(count(word))
+
+end
+
+
+def count(word)
+    alpha = ".abcdefghijklmnopqrstuvwxyz"
+    count = 0
+    word.each_char {|char| count += alpha.index(char) }
+    count
+end
+
+def triangle(num)
+    i = 1
+    result = (i * (i + 1)) / 2
+    while result <= num
+        if num == result
+            return true
+        else 
+            i += 1
+            result = (i * (i + 1)) / 2
+        end
+    end
+false
+end
+
+puts "-------triangular_word-------------"
+p triangular_word?('abc')       # true
+p triangular_word?('ba')        # true
+p triangular_word?('lovely')    # true
+p triangular_word?('question')  # true
+p triangular_word?('aa')        # false
+p triangular_word?('cd')        # false
+p triangular_word?('cat')       # false
+p triangular_word?('sink')      # false
+
+
+# Write a method consecutive_collapse that accepts an array of numbers as an 
+# argument. The method should return a new array that results from continuously 
+# removing consecutive numbers that are adjacent in the array. If multiple adjacent 
+# pairs are consecutive numbers, remove the leftmost pair first.
+
+def consecutive_collapse(arr)
+
+    new_arr = []
+    i = 0
+   while i < arr.length 
+        nexta = arr[i+1] || arr[i]
+
+        if arr[i] == (nexta - 1) || arr[i] == (nexta + 1)
+            i += 2
+
+        else
+            new_arr << arr[i]
+            i += 1
+        end
+    end
+    new_arr
+end
+
+
+puts "-------consecutive_collapse-------------"
+# p consecutive_collapse([3, 4, 1])                     # [1]
+# p consecutive_collapse([1, 4, 3, 7])                  # [1, 7]
+# p consecutive_collapse([9, 8, 2])                     # [2]
+# p consecutive_collapse([9, 8, 4, 5, 6])               # [6]
+p consecutive_collapse([1, 9, 8, 6, 4, 5, 7, 9, 2])   # [1, 9, 2]
+p consecutive_collapse([3, 5, 6, 2, 1])               # [1]
+# p consecutive_collapse([5, 7, 9, 9])                  # [5, 7, 9, 9]
+p consecutive_collapse([13, 11, 12, 12])              # []
