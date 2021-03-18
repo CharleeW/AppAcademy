@@ -526,31 +526,85 @@ p triangular_word?('sink')      # false
 # removing consecutive numbers that are adjacent in the array. If multiple adjacent 
 # pairs are consecutive numbers, remove the leftmost pair first.
 
-def consecutive_collapse(arr)
+def collapse(arr)
 
-    new_arr = []
-    i = 0
-   while i < arr.length 
-        nexta = arr[i+1] || arr[i]
-
-        if arr[i] == (nexta - 1) || arr[i] == (nexta + 1)
-            i += 2
-
-        else
-            new_arr << arr[i]
-            i += 1
+    (0...arr.length - 1).each do |i|
+        if arr[i] + 1 == arr[i + 1] || arr[i] == arr[i + 1] + 1
+            return arr[0...i] + arr[i + 2..-1]
         end
     end
-    new_arr
+    arr
+end
+
+def consecutive_collapse(numbers)
+    numbers.each { numbers = collapse(numbers) }
+    numbers
 end
 
 
 puts "-------consecutive_collapse-------------"
-# p consecutive_collapse([3, 4, 1])                     # [1]
-# p consecutive_collapse([1, 4, 3, 7])                  # [1, 7]
-# p consecutive_collapse([9, 8, 2])                     # [2]
-# p consecutive_collapse([9, 8, 4, 5, 6])               # [6]
+p consecutive_collapse([3, 4, 1])                     # [1]
+p consecutive_collapse([1, 4, 3, 7])                  # [1, 7]
+p consecutive_collapse([9, 8, 2])                     # [2]
+p consecutive_collapse([9, 8, 4, 5, 6])               # [6]
 p consecutive_collapse([1, 9, 8, 6, 4, 5, 7, 9, 2])   # [1, 9, 2]
 p consecutive_collapse([3, 5, 6, 2, 1])               # [1]
-# p consecutive_collapse([5, 7, 9, 9])                  # [5, 7, 9, 9]
+p consecutive_collapse([5, 7, 9, 9])                  # [5, 7, 9, 9]
 p consecutive_collapse([13, 11, 12, 12])              # []
+
+def pretentious_primes(arr, n)
+    if n > 0
+        arr.each_with_index do |number, i|
+            n.times do
+                number = prime_above(number)
+            end
+            arr[i] = number
+        end
+    else
+        n = n * -1
+        arr.each_with_index do |number, i|
+            n.times do
+                number = prime_below(number)
+            end
+            arr[i] = number
+        end
+    end
+arr
+end
+
+def prime_above(num)
+    s = num + 1
+    while s > num
+        if is_prime?(s)
+            return s
+        else
+            s += 1
+        end
+    end
+end
+
+def prime_below(num)
+    return nil if num == nil
+    previous = num - 1
+    while previous > 1
+        if is_prime?(previous)
+            return previous
+        else
+            previous -= 1
+        end
+    end
+    nil
+end
+
+puts "-------pretentious_primes-------------"
+
+p pretentious_primes([4, 15, 7], 1)           # [5, 17, 11]
+p pretentious_primes([4, 15, 7], 2)           # [7, 19, 13]
+p pretentious_primes([12, 11, 14, 15, 7], 1)  # [13, 13, 17, 17, 11]
+p pretentious_primes([12, 11, 14, 15, 7], 3)  # [19, 19, 23, 23, 17]
+p pretentious_primes([4, 15, 7], -1)          # [3, 13, 5]
+p pretentious_primes([4, 15, 7], -2)          # [2, 11, 3]
+p pretentious_primes([2, 11, 21], -1)         # [nil, 7, 19]
+p pretentious_primes([32, 5, 11], -3)         # [23, nil, 3]
+p pretentious_primes([32, 5, 11], -4)         # [19, nil, 2]
+p pretentious_primes([32, 5, 11], -5)         # [17, nil, nil]
