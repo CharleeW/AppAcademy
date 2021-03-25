@@ -79,19 +79,19 @@ class Board
 
     def left_daig(mark)
         k = 0
-        while k < @grid.length - 1
+        while k <= @grid.length
             if @grid[k][k] == mark
                 k += 1
             else
                 break
             end
-            return true if k == @grid.length - 1
+            return true if k == @grid.length
         end
         false
     end
 
     def right_daig(mark)
-        k = @grid.length - 1
+        k = @grid.length
         i = 0
         while k >= 0
             if @grid[i][k] == mark
