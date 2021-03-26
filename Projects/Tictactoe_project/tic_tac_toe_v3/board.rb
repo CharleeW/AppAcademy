@@ -1,8 +1,9 @@
 class Board
-    attr_reader :grid
+    attr_reader :grid, :n
     
-    def initialize
-        @grid = Array.new(3) {Array.new(3, "_")}
+    def initialize(n)
+        @n = n
+        @grid = Array.new(n) {Array.new(n, "_")}
     end
 
     def [](position)
@@ -16,9 +17,9 @@ class Board
     def valid?(position)
         row = position[0]
         column = position[1]
-        if row > 3 || row < 0
+        if row > @n || row < 0
             return false
-        elsif column > 3 || column < 0
+        elsif column > @n || column < 0
             return false
         else
             return true
@@ -39,9 +40,11 @@ class Board
     end
 
     def print
-        p @grid[0]
-        p @grid[1]
-        p @grid[2]
+        puts
+        (0...n).each do |r|
+            p @grid[r]
+        end
+        puts
     end
 
     def win_row?(mark)
@@ -58,13 +61,13 @@ class Board
         i = 0
         while i < @grid.length
             k = 0
-            while k < @grid.length - 1
+            while k < @grid.length
                 if @grid[k][i] == mark
                     k += 1
                 else
                     break
                 end
-            return true if k == @grid.length - 1
+            return true if k == @grid.length
             end
             i += 1
         end
@@ -112,6 +115,19 @@ class Board
     def empty_positions?
         @grid.each {|r| return true if r.include?("_")}
         false
+    end
+
+    def legal_positions
+        legals_p = []
+        @grid.each_with_index do |r, i|
+            r.each_with_index do |c, k|
+                position = [i,k]
+               if valid?(position) && empty?(position)
+                    legals_p << position
+               end
+            end
+        end
+        legals_p
     end
 
 end
