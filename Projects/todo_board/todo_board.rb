@@ -3,50 +3,69 @@ require_relative "item.rb"
 
 class TodoBoard
 
-    def initialize(label)
-        @list = List.new(label)
+    def initialize
+        @lists = {}
     end
 
     def get_command
         print "Type in a command: "
-        cmd, *args = gets.chomp.split(" ")
+        cmd, target, *args = gets.chomp.split(" ")
 
         case cmd
         when "mktodo"
-            @list.add_item(*args)
+            @lists[target].add_item(*args)
             return true
+
+        when 'mklist'
+            @lists[target] = List.new(target)
+
+        when 'ls'
+            @lists.keys.each { |label| puts ' ' + label }
+
+        when 'showall'
+            @lists.each_value(&:prints)
 
         when "up"
             args.map! {|ele| ele.to_i}
-            @list.up(*args)
+            @lists[target].up(*args)
             return true
 
         when "down"
             args.map! {|ele| ele.to_i}
-            @list.down(*args)
+           @lists[target].down(*args)
             return true
             
         when "swap"
             args.map! {|ele| ele.to_i}
-            @list.swap(*args)
+            @lists[target].swap(*args)
             return true
 
         when "sort"
-            @list.sort_by_date!
+            @lists[target].sort_by_date!
             return true
 
         when "priority"
-            @list.print_priority
+            @lists[target].print_priority
             return true
 
         when "prints"
             if args.empty?
-                @list.prints
+                @lists[target].prints
                 return true
             else
-                @list.print_full_item(*args)
+                @lists[target].print_full_item(*args)
                 return true
             end
+
+        when "toggle"
+            @lists[target].toggle_item(*args)
+
+        when "rm"
+            @lists[target].remove_item(*args)
+
+        when "purge"
+            @lists[target].purge
+
         when "quit"
             return false
         else
@@ -62,3 +81,5 @@ class TodoBoard
     end
 
 end
+
+# TodoBoard.new.run

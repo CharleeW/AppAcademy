@@ -1,5 +1,5 @@
 class Item
-
+    attr_reader :done
 
     def self.valid_date?(date_string)
         nums = date_string.split("-")
@@ -11,6 +11,7 @@ class Item
         return false if m < 1 || m > 12
         return false if d < 1 || d > 31
         true
+
     end
 
     def initialize(title, deadline, description)
@@ -18,6 +19,7 @@ class Item
         @title = title
         @deadline = deadline
         @description = description
+        @done = false
     end
 
     def title
@@ -46,6 +48,14 @@ class Item
 
     def description=(new_description)
         @description = new_description
+    end
+
+    def toggle
+        if @done == true
+            @done = false
+        else
+            @done = true
+        end
     end
 
 end

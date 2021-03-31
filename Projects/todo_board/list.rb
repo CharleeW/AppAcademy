@@ -1,18 +1,11 @@
 require_relative "item.rb"
 
 class List
+    attr_accessor :label
 
     def initialize(label)
         @label = label
         @items = []
-    end
-
-    def label
-        @label
-    end
-
-    def label=(new_label)
-        @label = new_label
     end
 
     def add_item(title, deadline, description="")
@@ -23,6 +16,10 @@ class List
             return false
         end
         true
+    end
+
+    def toggle_item(index)
+        @items[index.to_i].toggle
     end
 
     def size
@@ -44,12 +41,8 @@ class List
     end
 
     def [](index)
-        if valid_index?(index)
-            @items[index]
-        else
-            return nil
-        end
-
+        return nil if !valid_index?(index.to_i)
+        @items[index]
     end
 
     def priority
@@ -60,10 +53,10 @@ class List
         p "-------------------------"
         p @label
         p "-------------------------"
-        p "Index" + " | " + "Item" + " | " + "Dealine"
+        p "Index" + " | " + "Item" + " | " + "Dealine" + " | " + "Done?" 
         p "-------------------------"
         @items.each.with_index do |ele, i|
-            p i.to_s + " | " +  ele.title.to_s + " | " +  ele.deadline.to_s
+            p i.to_s + " | " +  ele.title.to_s + " | " +  ele.deadline.to_s + " | " +  ele.done.to_s
         end
         p "-------------------------"
         nil
@@ -72,7 +65,7 @@ class List
     def print_full_item(index)
         current = @items[index.to_i]
         p "-------------------------"
-        p current.title.to_s + " " + current.deadline.to_s
+        p current.title.to_s + " " + current.deadline.to_s + " " +  current.done.to_s
         p current.description
         p "-------------------------"
         nil
@@ -92,6 +85,20 @@ class List
             end
         end
         true
+    end
+
+    def remove_item(index)
+        i = index.to_i
+        if valid_index?(i)
+           @items = @items[0...i] + @items[(i + 1)..-1]
+        else
+            return false
+        end
+        true
+    end
+
+    def purge
+        @items.select! {|ele| !(ele.done)}
     end
 
     def down(index, amount=1)
