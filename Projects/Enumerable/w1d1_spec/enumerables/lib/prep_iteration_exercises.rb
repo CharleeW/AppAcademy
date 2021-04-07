@@ -68,27 +68,38 @@ class Array
     sorted = false
     while !sorted
       i = 0
+      sorted = true
       while i < self.length - 1
-        nexts = self[i+1]
-        current = self[i]
-        if prc.call(current, nexts) > 0
-          current, nexts = nexts, current
-          i += 1
+        if prc.call(self[i], self[i+1]) > 0
+          self[i], self[i+1] = self[i+1], self[i]
           sorted = false
         end
         i += 1
-        sorted = true
       end
     end
     self
   end
 
   def bubble_sort(&prc)
+    sorted_array = self.dup
+    sorted = false
+    while !sorted
+      i = 0
+      sorted = true
+      while i < sorted_array.length - 1
+        if prc.call(sorted_array[i], sorted_array[i+1]) > 0
+          sorted_array[i], sorted_array[i+1] = sorted_array[i+1], sorted_array[i]
+          sorted = false
+        end
+        i += 1
+      end
+    end
+    sorted_array
   end
 end
-
+p "==========================="
 p [1, 10, 5].bubble_sort! { |num1, num2| num1 <=> num2 } #sort ascending
-p [1, 3, 5].bubble_sort! { |num1, num2| num2 <=> num1 } #sort descending
+p [1, 3, 5].bubble_sort { |num1, num2| num2 <=> num1 } #sort descending
 
 # ### Substrings and Subwords
 #
@@ -104,17 +115,39 @@ p [1, 3, 5].bubble_sort! { |num1, num2| num2 <=> num1 } #sort descending
 # words).
 
 def substrings(string)
+  substrings_array = []
+  i = 0
+  while i < string.length
+    k = i
+    while k < string.length
+      substrings_array << string[i..k]
+      k += 1
+    end
+    i += 1
+  end
+  substrings_array
 end
 
 def subwords(word, dictionary)
+  substrings(word).select! {|word| dictionary.include?(word)}
 end
+
+p "==========================="
+p substrings("cat")
+
+p "==========================="
+p subwords("cat", ["cat", "a", "at"])
 
 # ### Doubler
 # Write a `doubler` method that takes an array of integers and returns an
 # array with the original elements multiplied by two.
 
 def doubler(array)
+
+  array.map! {|ele| ele * 2}
 end
+p "==========================="
+p doubler([2, 4, 6, 1])
 
 # ### My Each
 # Extend the Array class to include a method named `my_each` that takes a
@@ -141,8 +174,18 @@ end
 
 class Array
   def my_each(&prc)
+    i = 0
+    while i < self.length
+      prc.call(self[i])
+      i += 1
+    end
+    self
   end
 end
+
+p "==========================="
+p return_value = [1, 2, 3].my_each { |num| puts num }.my_each { |num| puts num }
+
 
 # ### My Enumerable Methods
 # * Implement new `Array` methods `my_map` and `my_select`. Do
@@ -159,17 +202,40 @@ end
 
 class Array
   def my_map(&prc)
+    mapped = []
+    self.my_each do |ele|
+      mapped << prc.call(ele)
+    end
+    mapped
   end
 
   def my_select(&prc)
+    selected = []
+    self.my_each_with_index do |ele,i|
+      selected << ele if prc.call(ele)
+    end
+    selected
   end
 
   def my_inject(&blk)
+    injected = self[0]
+    self[1..-1].my_each do |ele|
+      injected = blk.call(injected, ele)
+    end
+    injected
   end
+
+
 end
+
+p "============="
+p [45, 23, 43, 56].my_map {|ele| ele * 2}
+p [45, 23, 43, 56].select {|ele| ele % 2 == 0}
+p [30, 23, 43].my_inject {|ele, ele2| ele + ele2}
 
 # ### Concatenate
 # Create a method that takes in an `Array` of `String`s and uses `inject`
+
 # to return the concatenation of the strings.
 #
 # ```ruby
@@ -178,4 +244,10 @@ end
 # ```
 
 def concatenate(strings)
+  connected = strings.my_inject do |word, nexta|
+    word + nexta
+  end
+connected
 end
+
+p concatenate(["Yay ", "for ", "strings!"])
