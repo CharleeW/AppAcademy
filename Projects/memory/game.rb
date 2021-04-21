@@ -21,37 +21,49 @@
 # show the player an incorrect guess before flipping the Cards face-down again.
 
 require_relative "board.rb"
-require_relative "card.rb"
+# require_relative "card.rb"
 
 class Game
 
-    def initialize(size)
-        @grid = Board.new(size)
+    attr_reader :board
+
+    def initialize(size=4)
+        @board = Board.new(size)
+        @board.populate
     end
 
     def run
-        until @grid.won?
-        @grid.show_board
-        get_guess
+        until @board.won?
+            @board.show_board
+            f_guess = get_guess
+            @board.show_board
+            s_guess = get_guess
+            @board.show_board
+            if check_match(f_guess, s_guess)
+                puts "Good job, keep guessing"
+            else
+                puts "Not a match, try again"
+            end
         end
+        puts "You Win!"
     end
 
 
     def get_guess
-        puts "Enter a coordinate. Example: 0,3"
-        f_guess = gets.chomp
-        @grid[f_guess].show_face
-        self.show_board
-        puts "Enter a 2nd coordinate. Example: 0,3"
-        s_guess = gets.chomp
-        @grid[s_guess].show_face
-
-        if @grid[f_guess].value != @grid[s_guess].value
-            @grid[f_guess].face_up = false
-            @grid[s_guess].face_up = false
-        end
+        puts "Enter a coordinate. Example: 0 3"
+        guess = gets.chomp.split.map { |ele| ele.to_i}
+        @board[guess].show_card
+        @board[guess]
     end
-        
+
+    def check_match(f_guess, s_guess)
+        if !f_guess.==(s_guess)
+            f_guess.hide_card
+            s_guess.hide_card
+            return false
+        end
+        true
+    end
         
 
 

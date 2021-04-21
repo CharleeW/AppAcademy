@@ -6,20 +6,26 @@
 
 
 class Card
-    attr_reader :value, :face_up
+    attr_reader :face_up
+    attr_accessor :value
 
     def initialize
-        @value = [:J, :L, :F].sample
+        @value = " "
         @face_up = false
     end
 
-    def show_face
+    def show_card
         @face_up = true
         @value
     end
 
-    def hide_cards
+    def hide_card
+        @face_up = false
         print " "
+    end
+
+    def ==(card)
+        self.value == card.value
     end
 
 end

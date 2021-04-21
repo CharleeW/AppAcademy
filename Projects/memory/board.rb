@@ -8,38 +8,55 @@
 # #won? should return true if all cards have been revealed.
 # #reveal should reveal a Card at guessed_pos (unless 
 # it's already face-up, in which case the method should do nothing). 
-#     It should also return the value of the card it revealed (you'll see why later).
-# Parallel Assignment
-# In Ruby you can declare and assign multiple variables at once 
-# using commas to separate multiple variables and values. For example,
-
-# x, y, z = 1, 2, 3 # x = 1, y = 2, z = 3
-# And if there's not the same number of variables and values?
-
-# x, y = 1, 2, 3 # x = 1, y = 2, 3 is not assigned
-# a, b, c = 10, 20 # a = 10, b = 20, c = nil
-# When there are multiple variables assigned to an array, 
-# Ruby expands the array so that each element becomes its own value! For example,
-
-# x, y, z = [1, 2, 3] # x = 1, y = 2, z = 3
-# a, b, c = [10, 20] # a = 10, b = 20, c = nil
-# This is very helpful to use when writing [](pos) and []=(pos, value) 
-# for your Board to access row and col. Because the pos exists as an array, 
-#     it's better to pass it as an array in a method call, relying on the 
-#     method to index the array.
+# It should also return the value of the card it revealed (you'll see why later).
 
 require_relative "card.rb"
+
 class Board
-    attr_reader :grid
+    attr_accessor :grid
 
-    def initialize(size)
-        @grid = Array.new(size) {Array.new(size) {Card.new}}
+    def initialize(size=4)
+        @grid = Array.new(size) {Array.new(size){Card.new}}
     end
 
-    def [](n,k)
-        @grid[n][k]
+    def populate
+        pairs = get_pairs
+        i = 0
+        
+        @grid.each do |row|
+            row.each do |card|
+                card.value = pairs[i]
+                i += 1
+            end
+        end
     end
 
+    def get_pairs
+        pairs = []
+       n = @grid.length * 2
+       n.times do 
+        pairs << add_value
+       end
+       pairs.flatten.shuffle!
+    end
+
+    def add_value
+        values = []
+        values << create_values
+        values.flatten
+    end
+
+    def create_values
+        pairs = ""
+        valuess = ("A".."Z").to_a
+        pairs += valuess.sample * 2
+        pairs.split("")
+    end
+
+    def [](pos)
+        row, col = pos
+        @grid[row][col]
+    end
 
     def show_board
         print "  "
@@ -52,7 +69,7 @@ class Board
                 if tile.face_up
                 print tile.value.to_s + "|"
                 else
-                print tile.hide_cards.to_s + "|"
+                print tile.hide_card.to_s + "|"
                 end
             end
             i += 1
@@ -63,8 +80,8 @@ class Board
     end
 
     def won?
-        @grid.each do |row|
-            row.each {|tile| return false if !tile.face_up}
+        @grid.all? do |row|
+            row.all? {|tile| tile.face_up}
         end
     end
 end
