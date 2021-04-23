@@ -18,6 +18,8 @@ require_relative "tile.rb"
 class Board
     attr_reader :grid
 
+    ANSWERS = [1,2,3,4,5,6,7,8,9]
+
     def self.get_values
         file = File.open("./puzzles/sudoku1_almost.txt")
         file_data = file.readlines.map(&:chomp)
@@ -34,16 +36,74 @@ class Board
     end
 
     def show_board
-        @grid.each {|row| puts row.value}
+        @grid.each do |row| 
+            row.each do |col| 
+                print col.value.to_s +  " | "
+            end
+            puts
+            if @grid[2] == row || grid[5] == row || grid[8] == row
+                puts "------------------------------------"
+            else
+                puts "          |           |           | "
+            end
+        end
+        nil
     end
 
-    def [](pos)
-        row, col = pos[0], pos[1]
-        @board[row, col]
+    def [](n)
+        pos = n.split(" ")
+        row, col = pos[0].to_i, pos[1].to_i
+        self.grid[row][col]
     end
 
-    def []=(pos, guess)
-        @board[pos].guess_value = guess
+    def []=(n, value)
+    pos = n.split(" ")
+    row, col = pos[0].to_i, pos[1].to_i
+    tile = grid[row][col]
+    tile.value = value if !(tile.given)
+  end
+
+    def solved?
+        @grid.rows? && @grod.cols? && @grid.squares?
     end
+
+    def rows?
+        @grid.all? do |row|
+            row.map {|ele| ele.value}.sort == ANSWERS
+        end
+    end
+
+    def cols?
+        columns = @grid.transpose
+        columns.all? do |col|
+            col.map {|ele| ele.value}.sort == ANSWERS
+        end
+    end
+
+    def squares?
+        # r c - c+2
+        # 0 0 - 2            r + 1
+        # 1 0 - 2            r + 1
+        # 2 0 - 2            r + 1
+        # check guess       c += 3
+
+        # r c - c+2
+        # 0 3 - 5            r + 1
+        # 1 3 - 5            r + 1
+        # 2 3 - 5            r + 1
+        # check guess       c += 3
+
+        # r c - c+2
+        # 0 6 - 8            r + 1
+        # 1 6 - 8            r + 1
+        # 2 6 - 8            r + 1
+        # check guess       c += 3
+
+        when c > 6, r += 3 c = 0
+
+
+
+
+
 
 end
