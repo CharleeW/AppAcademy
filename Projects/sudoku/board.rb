@@ -16,18 +16,20 @@
 require_relative "tile.rb"
 
 class Board
-    attr_reader :grid
+    attr_reader :grid, :show_board
 
     ANSWERS = [1,2,3,4,5,6,7,8,9]
 
     def self.get_values
-        file = File.open("./puzzles/sudoku1_almost.txt")
+        randoms = ["./puzzles/sudoku1_almost.txt","./puzzles/sudoku1.txt","./puzzles/sudoku2.txt","./puzzles/sudoku3.txt"]
+        file = File.open(randoms.sample)
         file_data = file.readlines.map(&:chomp)
         file_data.map! do |row|
             row.split("").map! do |value| 
                 Tile.new(value) 
             end
         end
+
     end
 
 
@@ -57,14 +59,14 @@ class Board
     end
 
     def []=(n, value)
-    pos = n.split(" ")
+    pos = n.split("")
     row, col = pos[0].to_i, pos[1].to_i
     tile = grid[row][col]
     tile.value = value if !(tile.given)
   end
 
     def solved?
-        @grid.rows? && @grod.cols? && @grid.squares?
+        self.rows? && self.cols? && self.squares?
     end
 
     def rows?
@@ -81,28 +83,29 @@ class Board
     end
 
     def squares?
-        # r c - c+2
-        # 0 0 - 2            r + 1
-        # 1 0 - 2            r + 1
-        # 2 0 - 2            r + 1
-        # check guess       c += 3
+        find_squares.all? do |square|
+            square.sort == ANSWERS
+        end
+    end
 
-        # r c - c+2
-        # 0 3 - 5            r + 1
-        # 1 3 - 5            r + 1
-        # 2 3 - 5            r + 1
-        # check guess       c += 3
+    def find_squares
+        starting_points =[[0,0],[0,3],[0,6],[3,0],[3,3],[3,6],[6,0],[6,3],[6,6]]
 
-        # r c - c+2
-        # 0 6 - 8            r + 1
-        # 1 6 - 8            r + 1
-        # 2 6 - 8            r + 1
-        # check guess       c += 3
+        starting_points.map! do |start|
+            square = []
+            r,c = start
+            (r..r+2).each do |i|
+                (c..c+2).each do |j|
+                    square << @grid[i][j].value
+                end
+            end
+            square
 
-        when c > 6, r += 3 c = 0
+        end
 
-
-
+        starting_points
+    end
+        
 
 
 
