@@ -109,6 +109,18 @@ p exp_2(2,2)
 # You shouldn't have to pass any arrays between methods; you should be able to do 
 #     this just passing a single argument for the number of Fibonacci numbers requested.
 
+def fibonacci(n)
+    return 1 if n == 1 || n == 2
+    fibonacci(n-2) + fibonacci(n-1)
+end
+
+p "------------------------------------------"
+p fibonacci(5)
+p fibonacci(4)
+p fibonacci(3)
+p fibonacci(2)
+p fibonacci(1)
+
 
 
 
@@ -128,15 +140,33 @@ p exp_2(2,2)
 # only works on sorted arrays. Make sure to return the location of the found 
 # object (or nil if not found!). Hint: you will probably want to use subarrays.
 
+def bsearch(array, target)
+    return nil if array.empty?
+    m = array.length / 2
+    return m if array[m] == target 
+    if array[m] > target
+        return bsearch(array[0...m], target)
+    else
+        ele = bsearch(array[m+1..-1], target)
+        if ele == nil 
+            return nil 
+        else
+            return (m + 1) + bsearch(array[m+1..-1], target)
+        end
+    end
+    
+end
+p "-------------------------------------"
 # Make sure that these test cases are working:
+p bsearch([1, 2, 3], 1) # => 0
+p bsearch([2, 3, 4, 5], 3) # => 1
+p bsearch([2, 4, 6, 8, 10], 6) # => 2
+p bsearch([1, 3, 4, 5, 9], 5) # => 3
+p bsearch([1, 2, 3, 4, 5, 6], 6) # => 5
+p bsearch([1, 2, 3, 4, 5, 6], 0) # => nil
+p bsearch([1, 2, 3, 4, 5, 7], 6) # => nil
 
-# bsearch([1, 2, 3], 1) # => 0
-# bsearch([2, 3, 4, 5], 3) # => 1
-# bsearch([2, 4, 6, 8, 10], 6) # => 2
-# bsearch([1, 3, 4, 5, 9], 5) # => 3
-# bsearch([1, 2, 3, 4, 5, 6], 6) # => 5
-# bsearch([1, 2, 3, 4, 5, 6], 0) # => nil
-# bsearch([1, 2, 3, 4, 5, 7], 6) # => nil
+
 # -------------------------------------------------Merge Sort
 # Implement a method merge_sort that sorts an Array:
 
@@ -144,6 +174,26 @@ p exp_2(2,2)
 # array as a base case. This is unnecessary.
 # You'll want to write a merge helper method to merge the sorted halves.
 # To get a visual idea of how merge sort works, watch this gif and check out this diagram.
+
+def merge_sort(array)
+    return nil if array.length == 0
+    return array[0] if array.length == 1
+    mid = array.length / 2
+    first_half = array[0...mid]
+    second_half = array[mid..-1]
+    combine(merge_sort(first_half), merge_sort(second_half))
+end
+
+def combine(array1, array2)
+    sorted = []
+    sorted << [array1]
+    sorted << [array2]
+    sorted.flatten
+end
+
+p "=============="
+p merge_sort([2,1,4])
+
 # -------------------------------------------------Array Subsets
 # Write a method subsets that will return all subsets of an array.
 
