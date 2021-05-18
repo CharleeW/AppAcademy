@@ -176,23 +176,31 @@ p bsearch([1, 2, 3, 4, 5, 7], 6) # => nil
 # To get a visual idea of how merge sort works, watch this gif and check out this diagram.
 
 def merge_sort(array)
-    return nil if array.length == 0
-    return array[0] if array.length == 1
+    return array if array.length == 0 || array.length == 1
+
     mid = array.length / 2
     first_half = array[0...mid]
     second_half = array[mid..-1]
-    combine(merge_sort(first_half), merge_sort(second_half))
+    merge(merge_sort(first_half), merge_sort(second_half))
 end
 
-def combine(array1, array2)
-    sorted = []
-    sorted << [array1]
-    sorted << [array2]
-    sorted.flatten
+def merge(left, right)
+    merged = []
+    while !(left.empty?) && !(right.empty?)
+        if left.first < right.first
+            merged << left.first
+            left.shift
+        else
+            merged << right.first
+            right.shift
+        end
+    end
+    merged + left + right
 end
 
 p "=============="
-p merge_sort([2,1,4])
+p merge_sort([2,1,4,7,9,10,3])
+
 
 # -------------------------------------------------Array Subsets
 # Write a method subsets that will return all subsets of an array.
@@ -209,6 +217,11 @@ p merge_sort([2,1,4])
 # Those that do not contain 3 (all of these are subsets of [1, 2]).
 # For every subset that does not contain 3, there is also a corresponding subset 
 # that is the same, except it also does contain 3.
+
+
+
+
+
 # -------------------------------------------------Permutations
 # Write a recursive method permutations(array) that calculates all the permutations 
 # of the given array. For an array of length n there are n! different permutations. 
