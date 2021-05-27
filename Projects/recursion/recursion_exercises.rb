@@ -218,9 +218,21 @@ p merge_sort([2,1,4,7,9,10,3])
 # For every subset that does not contain 3, there is also a corresponding subset 
 # that is the same, except it also does contain 3.
 
+def subsets(sets)
+    return [[]] if sets.empty?
+    subsets(sets[0...-1]) + dup_sets(sets[-1], subsets(sets[0...-1]))
+end
 
+def dup_sets(last, subsets)
+    subsets.map do |ele1|
+        ele1 << last
+    end
+end
 
-
+p "===================="
+p subsets([1,2,3])
+p subsets([1])
+p subsets([1,2])
 
 # -------------------------------------------------Permutations
 # Write a recursive method permutations(array) that calculates all the permutations 
